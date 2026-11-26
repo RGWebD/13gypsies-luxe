@@ -170,14 +170,14 @@ secs=''.join(f'''<section class="mn-sec" data-k="{k}" aria-labelledby="mn-{k}"><
 menu_ld={"@context":"https://schema.org","@type":"Menu","name":"13 Gypsies menu","url":BASE+"menu.html","inLanguage":"en","hasMenuSection":[{"@type":"MenuSection","name":html.unescape(t),"hasMenuItem":[{"@type":"MenuItem","name":n,"description":d} for n,d in items]} for k,t,items in MENU]}
 crumbs={"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":BASE},{"@type":"ListItem","position":2,"name":"Menu","item":BASE+"menu.html"}]}
 menu=head("Menu · 13 Gypsies, Spanish Tapas in Jacksonville",
- "The 13 Gypsies menu: veg tables, meat and seafood, cold tapas, house pasta and daily offerings, made in house in Riverside, Jacksonville. The menu changes; call (904) 389-0330 for tonight's offerings.","menu.html",[menu_ld,crumbs])+f'''
+ "The 13 Gypsies menu: vegetables, meat and seafood, cold tapas, house pasta and daily offerings, made in house in Riverside, Jacksonville. The menu changes; call (904) 389-0330 for tonight's offerings.","menu.html",[menu_ld,crumbs])+f'''
 <body class="p-menu">
 {header('menu')}
 <main id="main">
 <section class="mn-hero sec" aria-labelledby="mn-title">
  <p class="eyebrow">The menu</p><h1 id="mn-title" class="mn-title">Small plates, <em>made in house</em></h1>
  <p class="lede">Tapas are meant for the table: order a few, share them, then order a few more. Bread, cheese, sausage, cured meats, pickles and pasta are all made here.</p>
- <dl class="mn-fmt"><div><dt>To share</dt><dd>Veg tables, meat and seafood, cold plates and house pasta</dd></div><div><dt>Daily offerings</dt><dd>Tonight’s risotto, From the Chamber and peasant bread</dd></div><div><dt>To drink</dt><dd>Mostly Spanish wines, Florida beer, cocktails and sangria</dd></div></dl>
+ <dl class="mn-fmt"><div><dt>To share</dt><dd>Vegetables, meat and seafood, cold plates and house pasta</dd></div><div><dt>Daily offerings</dt><dd>Tonight’s risotto, From the Chamber and peasant bread</dd></div><div><dt>To drink</dt><dd>Mostly Spanish wines, Florida beer, cocktails and sangria</dd></div></dl>
 </section>
 <figure class="mn-band">{img('tile','The black-and-white harlequin bar front above the original mosaic floor tile',sizes='(max-width:900px) 100vw, 1100px',w=(1600,800))}</figure>
 <section class="mn-body sec" aria-label="Dishes">
@@ -201,7 +201,7 @@ open(f'{OUT}/sitemap.xml','w').write(f'<?xml version="1.0" encoding="UTF-8"?>\n<
 mtxt='\n'.join(f"- {html.unescape(t)}: "+'; '.join(f"{n} ({d})" for n,d in items) for k,t,items in MENU)
 open(f'{OUT}/llms.txt','w').write(f"""# 13 Gypsies
 
-> Intimate Spanish tapas restaurant ("a peasant kitchen") in historic Riverside, Jacksonville, Florida. Seven tables, about twenty seats. Nearly everything is made in house: bread, cheese, sausage, dry-cured meats, pickled veg tables, spice blends and fresh pasta.
+> Intimate Spanish tapas restaurant ("a peasant kitchen") in historic Riverside, Jacksonville, Florida. Seven tables, about twenty seats. Nearly everything is made in house: bread, cheese, sausage, dry-cured meats, pickled vegetables, spice blends and fresh pasta.
 
 - Address: {ADDR} (corner of College St and Stockton St, right off I-10)
 - Phone: {PHONE} · Email: {EMAIL}
