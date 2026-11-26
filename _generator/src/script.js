@@ -43,9 +43,32 @@ if(pt&&!RM&&'IntersectionObserver' in window){pt.classList.add('live');
  mk();let rw;addEventListener('resize',()=>{clearTimeout(rw);rw=setTimeout(mk,200)});
 }
 
-/* menu filter chips */
-const chips=$$('.chip');chips.forEach(c=>c.addEventListener('click',()=>{const f=c.dataset.f;chips.forEach(x=>{const on=x===c;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)});
- $$('.mn-sec').forEach(s=>s.classList.toggle('off',f!=='all'&&s.dataset.k!==f))}));
+/* menu filter chips + search; always bring the results back into view */
+const chips=$$('.chip'),q=$('[data-msearch]'),cnt=$('[data-mcount]'),empty=$('[data-mempty]'),tools=$('#results');
+const items=$$('.mn-list li');items.forEach(li=>$$('h3,p',li).forEach(e=>e.dataset.t=e.textContent));
+const esc=t=>t.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let filt='all';
+function toResults(){if(!tools)return;const hh=(hdr?hdr.offsetHeight:0)+16,r=tools.getBoundingClientRect();
+ if(r.top<hh||r.top>innerHeight*.6){const y=scrollY+r.top-hh;scrollTo({top:Math.max(0,y),behavior:RM?'auto':'smooth'})}}
+function apply(scroll){const term=q?q.value.trim().toLowerCase():'';let n=0;
+ const rx=term?new RegExp('('+term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'):null;
+ $$('.mn-sec').forEach(s=>{const secOn=filt==='all'||s.dataset.k===filt;let shown=0;
+  $$('.mn-list li',s).forEach(li=>{const els=$$('h3,p',li);const hit=!term||els.some(e=>e.dataset.t.toLowerCase().includes(term));
+   const on=secOn&&hit;li.classList.toggle('off',!on);if(on)shown++;
+   els.forEach(e=>{e.innerHTML=rx&&on?esc(e.dataset.t).replace(rx,'<mark>$1</mark>'):esc(e.dataset.t)})});
+  s.classList.toggle('off',!shown);n+=shown});
+ if(cnt)cnt.textContent=(term||filt!=='all')?(n+(n===1?' dish':' dishes')+(term?' match “'+q.value.trim()+'”':'')):'';
+ if(empty)empty.hidden=n>0;
+ if(scroll)toResults()}
+chips.forEach(c=>c.addEventListener('click',()=>{filt=c.dataset.f;chips.forEach(x=>{const on=x===c;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)});apply(true)}));
+if(q){let t;q.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(()=>apply(true),180)});
+ q.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();clearTimeout(t);apply(true);q.blur()}})}
+
+/* anchors: land on the target after fonts and late layout settle (unless the visitor already scrolled) */
+if(location.hash.length>1){let moved=false;const stop=()=>moved=true;['wheel','touchstart','keydown'].forEach(ev=>addEventListener(ev,stop,{once:true,passive:true}));
+ const go=()=>{if(moved)return;let t;try{t=d.getElementById(decodeURIComponent(location.hash.slice(1)))}catch(e){}if(!t)return;
+  const r=d.documentElement,b=r.style.scrollBehavior;r.style.scrollBehavior='auto';t.scrollIntoView({block:'start'});r.style.scrollBehavior=b};
+ (d.fonts&&d.fonts.ready?d.fonts.ready:Promise.resolve()).then(go);addEventListener('load',()=>{go();setTimeout(go,350)},{once:true})}
 
 /* OpenTable widget (official loader); theme by card width. Link buttons stay as fallback. */
 $$('.otw[data-rid]').forEach(box=>{const w=box.clientWidth;const theme=w>=860?'wide':'tall';

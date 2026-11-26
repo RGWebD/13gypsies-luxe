@@ -10,17 +10,17 @@ for sub in ['assets']:
 shutil.copytree(f'{HERE}/assets',f'{OUT}/assets')
 shutil.copy(f'{HERE}/src/styles.css',f'{OUT}/assets/styles.css'); shutil.copy(f'{HERE}/src/script.js',f'{OUT}/assets/script.js')
 for f in os.listdir(f'{HERE}/static'): shutil.copy(f'{HERE}/static/{f}',f'{OUT}/{f}')
-V="5"
+V="6"
 def img(name,alt,cls='',sizes='(max-width:900px) 92vw, 46vw',lazy=True,w=(1600,800),extra=''):
     a,b=w
-    src=f"assets/img/{name}-{b}.webp"; ss=f"assets/img/{name}-{b}.webp {b}w, assets/img/{name}-{a}.webp {a}w"
+    src=f"assets/img/{name}-{b}.webp?v={V}"; ss=f"assets/img/{name}-{b}.webp?v={V} {b}w, assets/img/{name}-{a}.webp?v={V} {a}w"
     ld=' loading="lazy" decoding="async"' if lazy is True else (' decoding="async"' if lazy=='eager' else ' fetchpriority="high"')
     return f'<img class="{cls}" src="{src}" srcset="{ss}" sizes="{sizes}" alt="{alt}"{ld}{extra}>'
 MARK='<span class="wm">13 Gypsies</span>'
 def header(page):
     links=[('index.html#kitchen','The Kitchen'),('menu.html','Menu'),('index.html#private','Private Dining'),('index.html#visit','Visit')]
     if page=='index': links=[(h.replace('index.html',''),t) for h,t in links]
-    nav=''.join(f'<a href="{h}"{" aria-current=page" if (page=="menu" and t=="Menu") else ""}>{t}</a>' for h,t in links)
+    nav=''.join(f'<a href="{h}"{" class=nav-menu" if t=="Menu" else ""}{" aria-current=page" if (page=="menu" and t=="Menu") else ""}>{t}</a>' for h,t in links)
     home='#top' if page=='index' else 'index.html'
     return f'''<a class="skip" href="#main">Skip to content</a>
 <header class="hdr{' over' if page=='index' else ' solid'}" data-hdr>
@@ -28,7 +28,7 @@ def header(page):
  <nav class="hdr-nav" aria-label="Main">{nav}</nav>
  <div class="hdr-act"><a class="hdr-tel" href="{TEL}">{PHONE}</a><a class="btn sm" href="{'#reserve' if page=='index' else 'index.html#reserve'}">Reserve</a></div>
 </header>'''
-def footer():
+def footer(page):
     hrs=''.join(f'<li><span>{d}</span><span>{h}</span></li>' for _,d,h in HOURS)
     return f'''<footer class="ftr">
  <div class="ftr-in">
@@ -39,7 +39,7 @@ def footer():
  </div>
  <p class="ftr-base">© 13 Gypsies · {ADDR} · <a href="menu.html">Menu</a> · Photos from guests on Google and OpenTable</p>
 </footer>
-<div class="mbar" data-mbar><a class="btn fill" href="index.html#reserve">Reserve</a><a class="btn" href="{TEL}">Call</a></div>
+<div class="mbar" data-mbar>{'<a class="btn fill" href="#reserve">Reserve</a><a class="btn" href="menu.html">Menu</a>' if page=='index' else '<a class="btn fill" href="index.html#reserve">Reserve</a><a class="btn" href="index.html">Home</a>'}<a class="btn" href="{TEL}">Call</a></div>
 <aside class="demo" aria-label="Design preview notice"><span>Design preview by <b>RGWebD</b></span><button type="button" aria-label="Dismiss design preview notice">×</button></aside>'''
 def ld_rest():
     days={0:'Sunday',1:'Monday',2:'Tuesday',3:'Wednesday',4:'Thursday',5:'Friday',6:'Saturday'}
@@ -159,7 +159,7 @@ index=head("13 Gypsies · Spanish Tapas in Riverside, Jacksonville FL",
   </div></div>
 </section>
 </main>
-{footer()}
+{footer('index')}
 <script src="assets/script.js?v={V}" defer></script>
 </body></html>'''
 open(f'{OUT}/index.html','w').write(index)
@@ -181,13 +181,14 @@ menu=head("Menu · 13 Gypsies, Spanish Tapas in Jacksonville",
 </section>
 <figure class="mn-band">{img('tile','The black-and-white harlequin bar front above the original mosaic floor tile',sizes='(max-width:900px) 100vw, 1100px',w=(1600,800))}</figure>
 <section class="mn-body sec" aria-label="Dishes">
- <div class="chips" role="group" aria-label="Filter the menu">{chips}</div>
+ <div class="mn-tools" id="results"><label class="mn-search"><span class="sr">Search the menu</span><input type="search" placeholder="Search the menu, e.g. chorizo" autocomplete="off" data-msearch></label><div class="chips" role="group" aria-label="Filter the menu">{chips}</div><p class="mn-count" aria-live="polite" data-mcount></p></div>
  <div class="mn-grid">{secs}</div>
+ <p class="mn-empty" hidden data-mempty>Nothing on the menu matches that. Try another word, or <a href="{TEL}">call {PHONE}</a> and ask what’s on tonight.</p>
  <p class="mn-note">The menu changes with the kitchen and the season, and dishes can run out during service. Desserts are made in house and change often. Call <a href="{TEL}">{PHONE}</a> for tonight’s offerings, and tell your server about any allergies.</p>
 </section>
 <section class="mn-cta sec"><h2 class="h2">Seven tables, <em>book yours</em></h2><div class="rs-cta"><a class="btn fill" href="{OT_URL}" rel="noopener" target="_blank">Reserve on OpenTable</a><a class="btn" href="{TEL}">Call {PHONE}</a></div></section>
 </main>
-{footer()}
+{footer('menu')}
 <script src="assets/script.js?v={V}" defer></script>
 </body></html>'''
 open(f'{OUT}/menu.html','w').write(menu)
