@@ -267,6 +267,7 @@ em{font-style:italic}
 }
 @media (max-width:640px){
  body{font-size:17px}
+ .intro-h{font-size:31px}
  .sec{padding:92px 22px}
  .hero{min-height:600px}
  .hero-ph img{object-position:32% 60%}

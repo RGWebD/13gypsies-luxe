@@ -10,7 +10,7 @@ for sub in ['assets']:
 shutil.copytree(f'{HERE}/assets',f'{OUT}/assets')
 shutil.copy(f'{HERE}/src/styles.css',f'{OUT}/assets/styles.css'); shutil.copy(f'{HERE}/src/script.js',f'{OUT}/assets/script.js')
 for f in os.listdir(f'{HERE}/static'): shutil.copy(f'{HERE}/static/{f}',f'{OUT}/{f}')
-V="4"
+V="5"
 def img(name,alt,cls='',sizes='(max-width:900px) 92vw, 46vw',lazy=True,w=(1600,800),extra=''):
     a,b=w
     src=f"assets/img/{name}-{b}.webp"; ss=f"assets/img/{name}-{b}.webp {b}w, assets/img/{name}-{a}.webp {a}w"
